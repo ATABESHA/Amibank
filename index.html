@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>AmiBank</title>
+<style>
+:root{--navy:#0b2a4a;--teal:#12b5a6;--bg:#f2f5f9;--card:#fff;--txt:#14202e;--mut:#6b7a8c;--neg:#d6453d;--pos:#1a9e5c}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden}
+#splash{position:fixed;inset:0;background:linear-gradient(160deg,var(--navy),#123d66 60%,var(--teal));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .5s}
+#splash.hide{opacity:0;pointer-events:none}
+.logo{width:76px;height:76px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:38px;color:var(--navy);box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .6s ease}
+.logo span{color:var(--teal)}
+#splash h1{color:#fff;margin-top:18px;font-size:26px;letter-spacing:.5px}
+#splash p{color:#cfe3f3;margin-top:6px;font-size:14px}
+.bar{width:140px;height:4px;background:rgba(255,255,255,.2);border-radius:4px;margin-top:34px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:#fff;animation:load 2.2s ease forwards}
+@keyframes load{to{width:100%}}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+header{background:linear-gradient(160deg,var(--navy),#163f69);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 18px 70px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.mini{width:34px;height:34px;border-radius:10px;background:#fff;color:var(--navy);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:18px}
+.mini span{color:var(--teal)}
+.icons{display:flex;gap:14px;align-items:center}
+.ic{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.avatar{background:var(--teal);font-weight:700;font-size:14px}
+.hello{margin-top:20px;font-size:15px;opacity:.85}
+.name{font-size:22px;font-weight:700;margin-top:2px}
+.total{margin-top:16px;font-size:13px;opacity:.8}
+.big{font-size:34px;font-weight:800;margin-top:4px;letter-spacing:-.5px}
+main{padding:0 16px 100px;margin-top:-50px}
+.tab{display:none;animation:fade .35s}
+.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--card);border-radius:18px;padding:16px 8px;box-shadow:0 6px 20px rgba(11,42,74,.08)}
+.q{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--mut);cursor:pointer}
+.q b{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0e8f84);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+h2{font-size:17px;margin:22px 4px 10px;display:flex;justify-content:space-between;align-items:center}
+h2 a{font-size:13px;color:#0f7f9e;font-weight:600;cursor:pointer}
+.acc{background:var(--card);border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 3px 12px rgba(11,42,74,.06);position:relative;overflow:hidden}
+.acc:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--teal)}
+.acc.gold:before{background:#e0a92b}
+.acc small{color:var(--mut);font-size:12px}
+.acc .amt{font-size:22px;font-weight:700;margin-top:4px}
+.acc .iban{font-size:12px;color:var(--mut);margin-top:6px}
+.tx{background:var(--card);border-radius:16px;padding:4px 14px;box-shadow:0 3px 12px rgba(11,42,74,.06)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #edf0f4;cursor:pointer}
+.row:last-child{border:none}
+.em{width:40px;height:40px;border-radius:12px;background:#eef3f8;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.row .d{flex:1;min-width:0}
+.row .t{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{font-size:12px;color:var(--mut);margin-top:2px}
+.row .v{font-weight:700;font-size:14px;white-space:nowrap}
+.v.neg{color:var(--neg)}.v.pos{color:var(--pos)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:12px 0 4px;padding-bottom:4px}
+.chip{padding:7px 14px;border-radius:20px;background:#fff;border:1px solid #dde4ec;font-size:13px;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.card3d{height:200px;border-radius:20px;background:linear-gradient(135deg,#0b2a4a,#1d5a8c 55%,#12b5a6);color:#fff;padding:22px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 14px 30px rgba(11,42,74,.3);margin-top:8px}
+.card3d.black{background:linear-gradient(135deg,#111,#3a3a3a 60%,#7a6a3a)}
+.chipgold{width:42px;height:30px;border-radius:6px;background:linear-gradient(135deg,#f3d27a,#b98f2e)}
+.cnum{font-size:19px;letter-spacing:3px;font-family:monospace}
+.cbot{display:flex;justify-content:space-between;font-size:13px;opacity:.9}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.st{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 3px 12px rgba(11,42,74,.06)}
+.st small{color:var(--mut);font-size:12px}.st div{font-weight:700;font-size:18px;margin-top:4px}
+.prof{background:var(--card);border-radius:18px;padding:22px;text-align:center;box-shadow:0 6px 20px rgba(11,42,74,.08)}
+.prof .av{width:72px;height:72px;border-radius:50%;background:var(--teal);color:#fff;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.badge{display:inline-block;margin-top:8px;padding:5px 12px;border-radius:20px;background:#fff4d6;color:#8a6100;font-size:12px;font-weight:700}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;justify-content:space-around;padding:8px 0 calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.06);z-index:10}
+nav div{display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--mut);gap:3px;cursor:pointer;flex:1}
+nav div i{font-style:normal;font-size:21px;filter:grayscale(1);opacity:.6}
+nav div.on{color:var(--navy);font-weight:700}
+nav div.on i{filter:none;opacity:1}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;opacity:0;transition:.3s;z-index:60;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="logo">A<span>.</span></div>
+  <h1>AmiBank</h1>
+  <p>Private Banking for Very Important People</p>
+  <div class="bar"><i></i></div>
+</div>
+
+<header>
+  <div class="top">
+    <div class="mini">A<span>.</span></div>
+    <div class="icons">
+      <div class="ic" onclick="toast('🔔 3 new messages from your yacht captain')">🔔</div>
+      <div class="ic" onclick="toggleHide()">👁</div>
+      <div class="ic avatar" onclick="go('profile')">AT</div>
+    </div>
+  </div>
+  <div class="hello" id="greet">Good evening,</div>
+  <div class="name">Amiran Tabeshadze</div>
+  <div class="total">Total balance</div>
+  <div class="big money" data-v="4827391.22">0,00 €</div>
+</header>
+
+<main>
+  <section class="tab on" id="home">
+    <div class="quick">
+      <div class="q" onclick="toast('💸 Bizum sent: €500 to a friend who needs it more')"><b>⇄</b>Send</div>
+      <div class="q" onclick="toast('📈 Your money made €1,240 while you read this')"><b>↗</b>Invest</div>
+      <div class="q" onclick="go('cards')"><b>▭</b>Cards</div>
+      <div class="q" onclick="go('history')"><b>☰</b>History</div>
+    </div>
+    <h2>Accounts <a onclick="toast('You have too many accounts to show 😎')">View all</a></h2>
+    <div class="acc"><small>Everyday Account</small><div class="amt money" data-v="127391.22">0,00 €</div><div class="iban">•••• 4417</div></div>
+    <div class="acc gold"><small>Savings — "Pocket Money"</small><div class="amt money" data-v="2700000">0,00 €</div><div class="iban">•••• 0911</div></div>
+    <div class="acc"><small>Investment Portfolio</small><div class="amt money" data-v="2000000">0,00 €</div><div class="iban">+18,4% this year</div></div>
+    <h2>Latest transactions <a onclick="go('history')">See all</a></h2>
+    <div class="tx" id="latest"></div>
+  </section>
+
+  <section class="tab" id="history">
+    <div class="stat">
+      <div class="st"><small>Spent this month</small><div class="money" data-v="86240.50">0,00 €</div></div>
+      <div class="st"><small>Received this month</small><div class="money" data-v="412000">0,00 €</div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="tx" id="all"></div>
+  </section>
+
+  <section class="tab" id="cards">
+    <h2>My cards</h2>
+    <div class="card3d black">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div class="chipgold"></div><b>BLACK ∞</b></div>
+      <div class="cnum">•••• •••• •••• 7777</div>
+      <div class="cbot"><span>AMIRAN TABESHADZE</span><span>Limit: none</span></div>
+    </div>
+    <div class="card3d" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div class="chipgold"></div><b>DEBIT</b></div>
+      <div class="cnum">•••• •••• •••• 4417</div>
+      <div class="cbot"><span>AMIRAN TABESHADZE</span><span>12/31</span></div>
+    </div>
+    <h2>Card settings</h2>
+    <div class="tx">
+      <div class="row" onclick="toast('🔒 Card frozen. Just kidding, it never stops.')"><div class="em">🔒</div><div class="d"><div class="t">Freeze card</div><div class="s">Temporarily block</div></div></div>
+      <div class="row" onclick="toast('Limit raised to ∞. Again.')"><div class="em">⚙️</div><div class="d"><div class="t">Spending limit</div><div class="s">Currently: unlimited</div></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="profile">
+    <div class="prof">
+      <div class="av">A</div>
+      <div style="font-weight:700;font-size:19px">Amiran Tabeshadze</div>
+      <div style="color:var(--mut);font-size:13px;margin-top:4px">Client since 2009</div>
+      <div class="badge">⭐ Ultra Premium Client</div>
+    </div>
+    <h2>Settings</h2>
+    <div class="tx">
+      <div class="row" onclick="toast('Your personal banker is on his way 🚁')"><div class="em">👔</div><div class="d"><div class="t">Personal banker</div><div class="s">Available 24/7 by helicopter</div></div></div>
+      <div class="row" onclick="toggleHide()"><div class="em">👁</div><div class="d"><div class="t">Hide balances</div><div class="s">For when friends look over your shoulder</div></div></div>
+      <div class="row" onclick="location.reload()"><div class="em">🚪</div><div class="d"><div class="t">Log out</div><div class="s">Restart the app</div></div></div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <div class="on" data-t="home" onclick="go('home')"><i>🏠</i>Home</div>
+  <div data-t="history" onclick="go('history')"><i>📄</i>History</div>
+  <div data-t="cards" onclick="go('cards')"><i>💳</i>Cards</div>
+  <div data-t="profile" onclick="go('profile')"><i>👤</i>Profile</div>
+</nav>
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
